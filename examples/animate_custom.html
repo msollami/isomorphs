@@ -1,0 +1,350 @@
+<!-- START SIGMA IMPORTS -->
+<script src="../src/sigma.core.js"></script>
+<script src="../src/conrad.js"></script>
+<script src="../src/utils/sigma.utils.js"></script>
+<script src="../src/utils/sigma.polyfills.js"></script>
+<script src="../src/sigma.settings.js"></script>
+<script src="../src/classes/sigma.classes.dispatcher.js"></script>
+<script src="../src/classes/sigma.classes.configurable.js"></script>
+<script src="../src/classes/sigma.classes.graph.js"></script>
+<script src="../src/classes/sigma.classes.camera.js"></script>
+<script src="../src/classes/sigma.classes.quad.js"></script>
+<script src="../src/classes/sigma.classes.edgequad.js"></script>
+<script src="../src/captors/sigma.captors.mouse.js"></script>
+<script src="../src/captors/sigma.captors.touch.js"></script>
+<script src="../src/renderers/sigma.renderers.canvas.js"></script>
+<script src="../src/renderers/sigma.renderers.webgl.js"></script>
+<script src="../src/renderers/sigma.renderers.svg.js"></script>
+<script src="../src/renderers/sigma.renderers.def.js"></script>
+<script src="../src/renderers/webgl/sigma.webgl.nodes.def.js"></script>
+<script src="../src/renderers/webgl/sigma.webgl.nodes.fast.js"></script>
+<script src="../src/renderers/webgl/sigma.webgl.edges.def.js"></script>
+<script src="../src/renderers/webgl/sigma.webgl.edges.fast.js"></script>
+<script src="../src/renderers/webgl/sigma.webgl.edges.arrow.js"></script>
+<script src="../src/renderers/canvas/sigma.canvas.labels.def.js"></script>
+<script src="../src/renderers/canvas/sigma.canvas.hovers.def.js"></script>
+<script src="../src/renderers/canvas/sigma.canvas.nodes.def.js"></script>
+<script src="../src/renderers/canvas/sigma.canvas.edges.def.js"></script>
+<script src="../src/renderers/canvas/sigma.canvas.edges.curve.js"></script>
+<script src="../src/renderers/canvas/sigma.canvas.edges.arrow.js"></script>
+<script src="../src/renderers/canvas/sigma.canvas.edges.curvedArrow.js"></script>
+<script src="../src/renderers/canvas/sigma.canvas.edgehovers.def.js"></script>
+<script src="../src/renderers/canvas/sigma.canvas.edgehovers.curve.js"></script>
+<script src="../src/renderers/canvas/sigma.canvas.edgehovers.arrow.js"></script>
+<script src="../src/renderers/canvas/sigma.canvas.edgehovers.curvedArrow.js"></script>
+<script src="../src/renderers/canvas/sigma.canvas.extremities.def.js"></script>
+<script src="../src/renderers/svg/sigma.svg.utils.js"></script>
+<script src="../src/renderers/svg/sigma.svg.nodes.def.js"></script>
+<script src="../src/renderers/svg/sigma.svg.edges.def.js"></script>
+<script src="../src/renderers/svg/sigma.svg.edges.curve.js"></script>
+<script src="../src/renderers/svg/sigma.svg.labels.def.js"></script>
+<script src="../src/renderers/svg/sigma.svg.hovers.def.js"></script>
+<script src="../src/middlewares/sigma.middlewares.rescale.js"></script>
+<script src="../src/middlewares/sigma.middlewares.copy.js"></script>
+<script src="../src/misc/sigma.misc.animation.js"></script>
+<script src="../src/misc/sigma.misc.bindEvents.js"></script>
+<script src="../src/misc/sigma.misc.bindDOMEvents.js"></script>
+<script src="../src/misc/sigma.misc.drawHovers.js"></script>
+<!-- END SIGMA IMPORTS -->
+<script src="../plugins/sigma.plugins.animate/sigma.plugins.animate.js"></script>
+<div id="container">
+  <style>
+    #graph-container {
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      position: absolute;
+    }
+  </style>
+  <div id="graph-container"></div>
+</div>
+<script>
+/**
+ * This example shows how to use the sigma.plugins.animate plugin. It
+ * creates a random graph with two different views:
+ *
+ * The circular view displays the nodes on a circle, with each node
+ * having a random color and a random size.
+ *
+ * The grid view displays every nodes with the same size, and on a grid.
+ *
+ * Every two seconds, the graph will be animated from a view to the other
+ * one, in a one second animation.
+ */
+var i,
+    s,
+    o,
+    L = 10,
+    N = 100,
+    E = 500,
+    g = {
+      nodes: [],
+      edges: []
+    },
+    step = 0;
+
+    g = {
+    "nodes": [
+        {
+            "id": "1",
+            "label": "1",
+            "x": 0.5,
+            "y": -0.712671,
+            "size": 2,
+            "color": "rgb(1,179,255)",
+            "grid_x": 0.5,
+            "grid_y": -0.712671,
+            "grid_size": 2,
+            "grid_color": "rgb(1,179,255)",
+            "circular_x": 0.0,
+            "circular_y": -0.500023,
+            "circular_size": 2,
+            "circular_color": "rgb(255,179,255)"
+        },
+        {
+            "id": "2",
+            "label": "2",
+            "x": 0.25,
+            "y": -0.53102,
+            "size": 2,
+            "color": "rgb(1,179,255)",
+            "grid_x": 0.25,
+            "grid_y": -0.53102,
+            "grid_size": 2,
+            "grid_color": "rgb(1,179,255)",
+            "circular_x": 0.283616,
+            "circular_y": -0.374889,
+            "circular_size": 2,
+            "circular_color": "rgb(255,179,255)"
+        },
+        {
+            "id": "3",
+            "label": "3",
+            "x": 0.345426,
+            "y": -0.237119,
+            "size": 2,
+            "color": "rgb(1,179,255)",
+            "grid_x": 0.345426,
+            "grid_y": -0.237119,
+            "grid_size": 2,
+            "grid_color": "rgb(1,179,255)",
+            "circular_x": 0.250115,
+            "circular_y": -0.0666437,
+            "circular_size": 2,
+            "circular_color": "rgb(255,179,255)"
+        },
+        {
+            "id": "4",
+            "label": "4",
+            "x": 0.654574,
+            "y": -0.237119,
+            "size": 2,
+            "color": "rgb(1,179,255)",
+            "grid_x": 0.654574,
+            "grid_y": -0.237119,
+            "grid_size": 2,
+            "grid_color": "rgb(1,179,255)",
+            "circular_x": 0.250115,
+            "circular_y": -0.933356,
+            "circular_size": 2,
+            "circular_color": "rgb(255,179,255)"
+        },
+        {
+            "id": "5",
+            "label": "5",
+            "x": 0.75,
+            "y": -0.53102,
+            "size": 2,
+            "color": "rgb(1,179,255)",
+            "grid_x": 0.75,
+            "grid_y": -0.53102,
+            "grid_size": 2,
+            "grid_color": "rgb(1,179,255)",
+            "circular_x": 0.75065,
+            "circular_y": -0.0666437,
+            "circular_size": 2,
+            "circular_color": "rgb(255,179,255)"
+        },
+        {
+            "id": "6",
+            "label": "6",
+            "x": 0.5,
+            "y": -0.975552,
+            "size": 2,
+            "color": "rgb(1,179,255)",
+            "grid_x": 0.5,
+            "grid_y": -0.975552,
+            "grid_size": 2,
+            "grid_color": "rgb(1,179,255)",
+            "circular_x": 0.500229,
+            "circular_y": -0.750138,
+            "circular_size": 2,
+            "circular_color": "rgb(255,179,255)"
+        },
+        {
+            "id": "7",
+            "label": "7",
+            "x": 0.0,
+            "y": -0.61225,
+            "size": 2,
+            "color": "rgb(1,179,255)",
+            "grid_x": 0.0,
+            "grid_y": -0.61225,
+            "grid_size": 2,
+            "grid_color": "rgb(1,179,255)",
+            "circular_x": 0.500229,
+            "circular_y": -0.500023,
+            "circular_size": 2,
+            "circular_color": "rgb(255,179,255)"
+        },
+        {
+            "id": "8",
+            "label": "8",
+            "x": 0.190852,
+            "y": -0.0244479,
+            "size": 2,
+            "color": "rgb(1,179,255)",
+            "grid_x": 0.190852,
+            "grid_y": -0.0244479,
+            "grid_size": 2,
+            "grid_color": "rgb(1,179,255)",
+            "circular_x": 0.716843,
+            "circular_y": -0.374889,
+            "circular_size": 2,
+            "circular_color": "rgb(255,179,255)"
+        },
+        {
+            "id": "9",
+            "label": "9",
+            "x": 0.809148,
+            "y": -0.0244479,
+            "size": 2,
+            "color": "rgb(1,179,255)",
+            "grid_x": 0.809148,
+            "grid_y": -0.0244479,
+            "grid_size": 2,
+            "grid_color": "rgb(1,179,255)",
+            "circular_x": 0.75065,
+            "circular_y": -0.933356,
+            "circular_size": 2,
+            "circular_color": "rgb(255,179,255)"
+        },
+        {
+            "id": "10",
+            "label": "10",
+            "x": 1.0,
+            "y": -0.61225,
+            "size": 2,
+            "color": "rgb(1,179,255)",
+            "grid_x": 1.0,
+            "grid_y": -0.61225,
+            "grid_size": 2,
+            "grid_color": "rgb(1,179,255)",
+            "circular_x": 1.0,
+            "circular_y": -0.500023,
+            "circular_size": 2,
+            "circular_color": "rgb(255,179,255)"
+        }
+    ],
+    "edges": [
+        {
+            "id": "1",
+            "source": "1",
+            "target": "3"
+        },
+        {
+            "id": "2",
+            "source": "1",
+            "target": "4"
+        },
+        {
+            "id": "3",
+            "source": "1",
+            "target": "6"
+        },
+        {
+            "id": "4",
+            "source": "2",
+            "target": "4"
+        },
+        {
+            "id": "5",
+            "source": "2",
+            "target": "5"
+        },
+        {
+            "id": "6",
+            "source": "2",
+            "target": "7"
+        },
+        {
+            "id": "7",
+            "source": "3",
+            "target": "5"
+        },
+        {
+            "id": "8",
+            "source": "3",
+            "target": "8"
+        },
+        {
+            "id": "9",
+            "source": "4",
+            "target": "9"
+        },
+        {
+            "id": "10",
+            "source": "5",
+            "target": "10"
+        },
+        {
+            "id": "11",
+            "source": "6",
+            "target": "7"
+        },
+        {
+            "id": "12",
+            "source": "6",
+            "target": "10"
+        },
+        {
+            "id": "13",
+            "source": "7",
+            "target": "8"
+        },
+        {
+            "id": "14",
+            "source": "8",
+            "target": "9"
+        },
+        {
+            "id": "15",
+            "source": "9",
+            "target": "10"
+        }
+    ]
+}
+// Instantiate sigma:
+s = new sigma({
+  graph: g,
+  container: 'graph-container',
+  settings: {
+    animationsTime: 4000 //anamiation duration
+  }
+});
+
+setInterval(function() {
+  var prefix = ['grid_', 'circular_'][step = +!step];
+  sigma.plugins.animate(
+    s,
+    {
+      x: prefix + 'x',
+      y: prefix + 'y',
+      size: prefix + 'size',
+      color: prefix + 'color'
+    }
+  );
+}, 4000+2000//alternating interval
+);
+</script>
